@@ -39,6 +39,11 @@ app.post('/api/signup', upload.single('resume'), async (req, res) => {
   const { name, email } = req.body;
   const resume = req.file ? req.file.filename : null;
 
+  // Validate input
+  if (!name || !email) {
+    return res.status(400).json({ error: 'Name and email are required' });
+  }
+
   console.log('Received data:', { name, email, resume });
 
   try {
@@ -52,6 +57,7 @@ app.post('/api/signup', upload.single('resume'), async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
