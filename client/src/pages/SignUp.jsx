@@ -17,11 +17,12 @@ const SignUp = () => {
     if (resume) formData.append('resume', resume);
   
     try {
-      const response = await axios.post('https://job-portal-backend-6506.onrender.com/api/signup', formData, {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/signup`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
+      
       if (response.status === 201) {
         console.log('Response:', response.data);
         navigate('/success');
