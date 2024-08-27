@@ -10,25 +10,27 @@ const SignUp = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     const formData = new FormData();
     formData.append('name', name);
     formData.append('email', email);
     if (resume) formData.append('resume', resume);
-
+  
     try {
-      const response = await axios.post('https://job-portal-backend-6506.onrender.com//api/signup', formData, {
+      const response = await axios.post('https://job-portal-backend-6506.onrender.com/api/signup', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
-      console.log('Response:', response.data);
-      // Redirect to the success page
-      navigate('/success');
+      if (response.status === 201) {
+        console.log('Response:', response.data);
+        navigate('/success');
+      }
     } catch (error) {
       console.error('Error signing up:', error);
     }
   };
+  
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50">
