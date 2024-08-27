@@ -17,7 +17,7 @@ const SignUp = () => {
     if (resume) formData.append('resume', resume);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/signup', formData, {
+      const response = await axios.post('https://job-portal-backend-6506.onrender.com//api/signup', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
