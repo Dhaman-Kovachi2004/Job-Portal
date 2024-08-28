@@ -11,7 +11,7 @@ dotenv.config();
 
 const app = express();
 app.use(cors({
-  origin: 'jobportalbydhaman.netlify.app' // Replace with your actual frontend domain
+  origin: 'https://jobportalbydhaman.netlify.app' // Replace with your actual frontend domain
 }));
 
 app.use(express.json());
