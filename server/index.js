@@ -1,9 +1,9 @@
 import express from 'express';
 import multer from 'multer';
 import cors from 'cors';
-import pkg from 'pg';
+import pkg from 'pg';  // Ensure this line is correct
+const { Pool } = pkg;  // Ensure Pool is destructured correctly
 import dotenv from 'dotenv';
-import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 
@@ -13,16 +13,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Ensure the uploads directory exists
-const uploadDir = process.env.UPLOADS_DIR || 'uploads/';
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// Set up multer to handle file uploads securely
+// Set up multer to handle file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, uploadDir);
+    cb(null, process.env.UPLOADS_DIR || 'uploads/');
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = crypto.randomBytes(16).toString('hex');
@@ -30,31 +24,22 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({
-  storage,
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype !== 'application/pdf') {
-      return cb(new Error('Only PDF files are allowed'), false);
-    }
-    cb(null, true);
-  }
-});
+const upload = multer({ storage });
 
-console.log('Uploads directory:', uploadDir);
+console.log('Uploads directory:', process.env.UPLOADS_DIR || 'uploads/');
 
-// Initialize PostgreSQL connection pool with SSL
+// Initialize PostgreSQL connection pool
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false
-  }
+    rejectUnauthorized: false,
+  },
 });
 
 app.post('/api/signup', upload.single('resume'), async (req, res) => {
   const { name, email } = req.body;
   const resume = req.file ? req.file.filename : null;
 
-  // Validate input
   if (!name || !email) {
     return res.status(400).json({ error: 'Name and email are required' });
   }
