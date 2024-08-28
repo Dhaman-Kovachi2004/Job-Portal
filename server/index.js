@@ -54,7 +54,7 @@ app.post('/api/signup', upload.single('resume'), async (req, res) => {
       'INSERT INTO job_seekers (name, email, resume) VALUES ($1, $2, $3)',
       [name, email, resume]
     );
-    res.status(200).json({ message: 'Signup successful' });
+    res.status(201).json({ message: 'Signup successful' }); // Use 201 for successful creation
   } catch (error) {
     console.error('Error inserting into database:', error);
     res.status(500).json({ error: 'Internal server error' });
