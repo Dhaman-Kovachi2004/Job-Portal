@@ -11,7 +11,7 @@ dotenv.config();
 
 const app = express();
 app.use(cors({
-  origin: 'https://jovial-croissant-d13a24.netlify.app' // Replace with your actual frontend domain
+  origin: 'jobportalbydhaman.netlify.app' // Replace with your actual frontend domain
 }));
 
 app.use(express.json());
