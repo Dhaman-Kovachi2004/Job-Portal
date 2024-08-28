@@ -28,10 +28,15 @@ const SignUp = () => {
       }
     } catch (error) {
       console.error('Error signing up:', error);
+      if (error.response && error.response.status === 400) {
+        alert('Email already exists. Please use a different email.');
+      } else {
+        alert('An error occurred. Please try again.');
+      }
     }
   };
   
-
+  
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50">
       <form
