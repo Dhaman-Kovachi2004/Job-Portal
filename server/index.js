@@ -2,8 +2,8 @@ import express from 'express';
 import multer from 'multer';
 import cors from 'cors';
 import pkg from 'pg';
-const { Pool } = pkg;
 import dotenv from 'dotenv';
+import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 
@@ -13,26 +13,41 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Set up multer to handle file uploads
+// Ensure the uploads directory exists
+const uploadDir = process.env.UPLOADS_DIR || 'uploads/';
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// Set up multer to handle file uploads securely
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, process.env.UPLOADS_DIR || 'uploads/');
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    // Generate a unique filename with a .pdf extension
     const uniqueSuffix = crypto.randomBytes(16).toString('hex');
     cb(null, `${uniqueSuffix}.pdf`);
   }
 });
 
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype !== 'application/pdf') {
+      return cb(new Error('Only PDF files are allowed'), false);
+    }
+    cb(null, true);
+  }
+});
 
-console.log('Uploads directory:', process.env.UPLOADS_DIR || 'uploads/');
+console.log('Uploads directory:', uploadDir);
 
-// Initialize PostgreSQL connection pool
+// Initialize PostgreSQL connection pool with SSL
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: false, // Disable SSL if not supported
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 app.post('/api/signup', upload.single('resume'), async (req, res) => {
@@ -57,7 +72,6 @@ app.post('/api/signup', upload.single('resume'), async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
