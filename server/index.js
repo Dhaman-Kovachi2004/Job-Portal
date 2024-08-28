@@ -35,7 +35,7 @@ console.log('Uploads directory:', process.env.UPLOADS_DIR || 'uploads/');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false,
+    rejectUnauthorized: false, // Adjust based on your provider's requirements
   },
 });
 
@@ -57,7 +57,11 @@ app.post('/api/signup', upload.single('resume'), async (req, res) => {
     res.status(201).json({ message: 'Signup successful' }); // Use 201 for successful creation
   } catch (error) {
     console.error('Error inserting into database:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    if (error.code === '23505') { // Unique violation
+      res.status(400).json({ error: 'Email already exists' });
+    } else {
+      res.status(500).json({ error: 'Internal server error' });
+    }
   }
 });
 

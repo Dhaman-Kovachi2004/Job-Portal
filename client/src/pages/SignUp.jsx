@@ -22,9 +22,11 @@ const SignUp = () => {
           'Content-Type': 'multipart/form-data'
         }
       });
-      if (response.status === 201) {
-        console.log('Response:', response.data);
+      console.log('Response:', response.data);
+      if (response.status === 201) { // Adjust this if your server uses a different status code
         navigate('/success');
+      } else {
+        console.error('Unexpected status code:', response.status);
       }
     } catch (error) {
       console.error('Error signing up:', error);
@@ -35,6 +37,7 @@ const SignUp = () => {
       }
     }
   };
+  
   
   
   return (
