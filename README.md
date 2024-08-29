@@ -4,16 +4,14 @@ A full-stack web application for job seekers to sign up, upload resumes, and app
 
 ## Features
 
-- **User Registration**: Users can sign up by providing personal details and selecting their interest (Web Development, Android Development, Machine Learning).
-- **Resume Upload**: Users can upload their resumes in PDF format, which are securely stored on the server.
-- **Apply for Jobs**: Users can view different sections and apply for jobs related to their interests.
+- **Home**: Welcome Page for the Website.
+- **Job SignUp**:In this Page, Users can write their information and upload their resumes in PDF format, which are securely stored on the server.
+- **SuccessPage**: After the Form Completion is Successful , It will redirect to this page.
 
 ## Architecture
 
-![Architecture Diagram](architecture-diagram.png)
-
 ### Front-End (React)
-- **Components**: The application consists of reusable React components, such as `SignUp.js`, `Home.js`, etc.
+- **Components**: The application consists of reusable React components, such as `SignUp.jsx`, `Home.jsx`,`SuccessPage.jsx` etc.
 - **Routing**: Handled by `react-router-dom` with routes for Home, Sign Up, and Success pages.
 
 ### Back-End (Express)
@@ -22,8 +20,8 @@ A full-stack web application for job seekers to sign up, upload resumes, and app
 
 ### Database Schema
 
-- **Users Table**: Stores user details such as name, email, phone number, interest, and hashed passwords.
-- **Resumes Table**: Stores the file paths of uploaded resumes linked to the user.
+- **Job_Seeker Table**: Stores user details such as name, email and resume.
+
 
 ## Installation
 
@@ -46,7 +44,7 @@ A full-stack web application for job seekers to sign up, upload resumes, and app
     ```bash
     cd client
     npm install
-    npm start
+    npm run dev
     ```
 
 3. **Set up the back-end**:
@@ -54,6 +52,7 @@ A full-stack web application for job seekers to sign up, upload resumes, and app
     ```bash
     cd server
     npm install
+    npm run dev
     ```
 
 4. **Configure environment variables**:
@@ -89,32 +88,15 @@ Registers a new user.
     {
       "name": "John Doe",
       "email": "john.doe@example.com",
-      "phone": "1234567890",
-      "interest": "web-development",
-      "password": "securepassword"
+      "resume":File.pdf
     }
     ```
 
 - **Response**:
     ```json
     {
-      "message": "User registered successfully!",
+      "message": "User signed up successfully!",
       "userId": 1
-    }
-    ```
-
-### POST /api/upload-resume
-
-Uploads a user's resume.
-
-- **Form Data**:
-    - `userId`: The ID of the user.
-    - `pdfFile`: The PDF file of the resume.
-
-- **Response**:
-    ```json
-    {
-      "message": "Resume uploaded successfully!"
     }
     ```
 
@@ -122,6 +104,4 @@ Uploads a user's resume.
 
 Contributions are welcome! Please open an issue or submit a pull request if you'd like to contribute.
 
-## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
